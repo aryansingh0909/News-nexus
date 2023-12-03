@@ -1,6 +1,6 @@
 from flask import Flask,request,jsonify
 from flask_cors import CORS
-
+from chromac import find_similiar 
 import csv
 import random
 
@@ -42,31 +42,11 @@ def get_random_objects():
     return jsonify(random_objects)
 
 
-@app.route('/fifa', methods=['GET'])
-def get_fifa():
-    data = [
-    {
-      "url": "https://www.nytimes.com/2000/01/01/sports/yacht-racing-elite-survivors-race-toward-cup.html",
-      "abstract": "Cruising World exec editor Herb McCormick article notes that victor in Louis Vuitton challengers series will challenge Team New Zealand for America's Cup; photo (M)"
-    },
-    {
-      "url": "https://www.nytimes.com/2000/01/01/sports/transactions-165557.html",
-      "abstract": " BASKETBALL    National Basketball Association  ATLANTA HAWKS--Activated G Isaiah Rider .    FOOTBALL    National Football League  NFL--Fined Detroit FS Ron Rice $5,000 for unnecessary roughness against Denver.  CHICAGO BEARS--Signed OL Keno Hills. Placed RB Curtis Enis on injured reserve.  PITTSBURGH STEELERS--Placed TE Mitch Lyons on injured reserve. Signed OLB Reggie Lowe from the practice squad."
-    },
-    {
-      "url": "https://www.nytimes.com/2000/01/01/sports/pro-football-playoffs-or-no-dallas-provides-the-motivation.html",
-      "abstract": "Article on upcoming New York Giants-Dallas Cowboys game; photo (M)"
-    },
-    {
-      "url": "https://www.nytimes.com/2000/01/01/opinion/l-on-this-first-day-a-fanfare-for-the-new-era-a-german-century-165689.html",
-      "abstract": "Sol Gittleman letter, commenting on Dec 22 editorial, says 21st century could well be the German century; drawing"
-    },
-    {
-      "url": "https://www.nytimes.com/2000/01/01/opinion/l-on-this-first-day-a-fanfare-for-the-new-era-an-asian-century-165670.html",
-      "abstract": "Jeffrey Ballinger letter questions Ian Buruma's optimism about Asia's prospects in next century (Op-Ed, Dec 29); drawing"
-    }
-    ]
-    return data
+@app.route('/search', methods=['GET'])
+def get_search():
+    data = request.headers.get('search')
+    results = find_similiar(data)
+    return jsonify(results)
 
 if __name__ == '__main__':
     app.run(debug=True)

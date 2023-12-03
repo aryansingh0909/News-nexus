@@ -11,16 +11,20 @@ openai_ef = embedding_functions.OpenAIEmbeddingFunction(
 client = chromadb.Client()
 
 # Create a collection in Chroma DB
-collection = client.create_collection(name="nyt_times_collection")
+def create_collection():
+    collection = client.create_collection(name="nyt_times_collection")
 
-documents = data['abstract'].tolist()[0:100]  # Assuming 'article_text' is a column in the dataset
-documents_embeddings = openai_ef(documents)  
-ids = data['web_url'].tolist()[0:100]
-collection.add(documents=documents, ids=ids)
+    documents = data['abstract'].tolist()[0:100]  # Assuming 'article_text' is a column in the dataset
+    documents_embeddings = openai_ef(documents)  
+    ids = data['web_url'].tolist()[0:100]
+    collection.add(documents=documents, ids=ids)
+    return collection
 
-# query_embedding = openai_ef(query_document)  # Embedding vector for the query document
-similar_documents = collection.query(
-    query_texts=["Fifa"],
-    n_results=5
-)
-print(similar_documents)
+def find_similiar(query_string):
+    if(collection==None):
+        create_collection()
+    similar_documents = collection.query(
+        query_texts=[query_string],
+        n_results=5
+    )
+    return similar_documents
